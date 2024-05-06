@@ -14,6 +14,7 @@ ICECCallbacks g_callbacks;
 void logMessageCallback(void *, const cec_log_message *);
 void commandReceived(void *, const cec_command *);
 void keyPressed(void *, const cec_keypress *);
+void alertReceived(void *, const type, const param);
 
 libcec_configuration * allocConfiguration()  {
 	libcec_configuration * ret = (libcec_configuration*)malloc(sizeof(libcec_configuration));
@@ -31,7 +32,7 @@ void setupCallbacks(libcec_configuration *conf)
 	g_callbacks.keyPress = &keyPressed;
 	g_callbacks.commandReceived = &commandReceived;
 	g_callbacks.configurationChanged = NULL;
-	g_callbacks.alert = NULL;
+	g_callbacks.alert = &alertReceived;
 	g_callbacks.menuStateChanged = NULL;
 	g_callbacks.sourceActivated = NULL;
 	(*conf).callbacks = &g_callbacks;

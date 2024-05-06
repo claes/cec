@@ -46,3 +46,11 @@ func commandReceived(c unsafe.Pointer, msg *C.cec_command) C.int {
 
 	return 0
 }
+
+//export alertReceived
+func alertReceived(c unsafe.Pointer, type C.libcec_alert_type, param C.libcec_parameter) C.int {
+	log.Printf("cec alert\n")
+	log.Printf("cec alert: %v %v\n", type, param)
+	// reconnect
+	return 0
+}
