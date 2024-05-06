@@ -108,7 +108,7 @@ func getAdapter(connection C.libcec_connection_t, name string) (cecAdapter, erro
 }
 
 func openAdapter(connection C.libcec_connection_t, adapter cecAdapter) error {
-	C.libcec_init_video_standalone(connection)
+	//C.libcec_init_video_standalone(connection)
 
 	result := C.libcec_open(connection, C.CString(adapter.Comm), C.CEC_DEFAULT_CONNECT_TIMEOUT)
 	if result < 1 {
