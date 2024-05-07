@@ -43,6 +43,15 @@ var vendorList = map[uint64]string{0x000039: "Toshiba", 0x0000F0: "Samsung",
 	0x18C086: "Broadcom", 0x6B746D: "Vizio", 0x8065E9: "Benq",
 	0x9C645E: "Harman Kardon"}
 
+var cecDeviceType = map[int]string {
+ 0: "CEC_DEVICE_TYPE_TV",               
+ 1:  "CEC_DEVICE_TYPE_RECORDING_DEVICE",
+ 2:  "CEC_DEVICE_TYPE_RESERVED",
+ 3:  "CEC_DEVICE_TYPE_TUNER",         
+ 4:  "CEC_DEVICE_TYPE_PLAYBACK_DEVICE",
+ 5:  "CEC_DEVICE_TYPE_AUDIO_SYSTEM"
+}
+
 var opcodes = map[int]string{
 	0x82: "ACTIVE_SOURCE",
 	0x04: "IMAGE_VIEW_ON",

@@ -245,6 +245,17 @@ func (c *Connection) IsActiveSource(address int) bool {
 	return false
 }
 
+// SetActiveSource
+func (c *Connection) SetActiveSource(device_type int) bool {
+	result := C.libcec_set_active_source(c.connection, device_type)
+
+	if int(result) != 0 {
+		return true
+	}
+
+	return false
+}
+
 // GetDeviceVendorID - Get the Vendor-ID of the device at the given address
 func (c *Connection) GetDeviceVendorID(address int) uint64 {
 	result := C.libcec_get_device_vendor_id(c.connection, C.cec_logical_address(address))
