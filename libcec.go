@@ -14,7 +14,7 @@ ICECCallbacks g_callbacks;
 void logMessageCallback(void *, const cec_log_message *);
 void commandReceived(void *, const cec_command *);
 void keyPressed(void *, const cec_keypress *);
-void alertReceived(void *, const type, const param);
+void alertReceived(void *, const libcec_alert, const libcec_parameter);
 
 libcec_configuration * allocConfiguration()  {
 	libcec_configuration * ret = (libcec_configuration*)malloc(sizeof(libcec_configuration));
@@ -247,7 +247,7 @@ func (c *Connection) IsActiveSource(address int) bool {
 
 // SetActiveSource
 func (c *Connection) SetActiveSource(device_type int) bool {
-	result := C.libcec_set_active_source(c.connection, device_type)
+	result := C.libcec_set_active_source(c.connection, C.cec_device_type(device_type))
 
 	if int(result) != 0 {
 		return true
