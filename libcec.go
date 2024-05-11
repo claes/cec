@@ -74,10 +74,11 @@ func cecInit(c *Connection, deviceName string) (C.libcec_connection_t, error) {
 	defer C.freeConfiguration(conf)
 
 	conf.clientVersion = C.uint32_t(C.LIBCEC_VERSION_CURRENT)
-
 	conf.deviceTypes.types[0] = C.CEC_DEVICE_TYPE_RECORDING_DEVICE
 	conf.callbackParam = unsafe.Pointer(c)
-
+	conf.bActivateSource = 0
+	//conf.iButtonReleaseDelayMs = 0
+	//conf.iPhysicalAddress = 0
 	C.setName(conf, C.CString(deviceName))
 	C.setupCallbacks(conf)
 
@@ -94,6 +95,11 @@ func getAdapter(connection C.libcec_connection_t, name string) (cecAdapter, erro
 	var deviceList [10]C.cec_adapter
 	devicesFound := int(C.libcec_find_adapters(connection, &deviceList[0], 10, nil))
 
+	log.Printf("Found %d adapters: \n", devicesFound)
+	for i := 0; i < devicesFound; i++ {
+		log.Printf("%d: %v %v\n", i, deviceList[i].comm[0], deviceList[i].path[0])
+	}
+
 	for i := 0; i < devicesFound; i++ {
 		device := deviceList[i]
 		adapter.Path = C.GoStringN(&device.path[0], 1024)
@@ -108,8 +114,10 @@ func getAdapter(connection C.libcec_connection_t, name string) (cecAdapter, erro
 }
 
 func openAdapter(connection C.libcec_connection_t, adapter cecAdapter) error {
+	log.Println("libcec_init_video_standalone")
 	C.libcec_init_video_standalone(connection)
 
+	log.Println("libcec_open")
 	result := C.libcec_open(connection, C.CString(adapter.Comm), C.CEC_DEFAULT_CONNECT_TIMEOUT)
 	if result < 1 {
 		return errors.New("Failed to open adapter")

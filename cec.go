@@ -162,17 +162,23 @@ func Open(name string, deviceName string) (*Connection, error) {
 		return nil, err
 	}
 
+	log.Println("CEC initialized")
+
 	adapter, err := getAdapter(c.connection, name)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
 
+	log.Printf("Adapter retrieved %s %s\n", adapter.Comm, adapter.Path)
+
 	err = openAdapter(c.connection, adapter)
 	if err != nil {
 		log.Println(err)
 		return nil, err
 	}
+
+	log.Println("Adapter opened")
 
 	return c, nil
 }
