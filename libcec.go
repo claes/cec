@@ -77,7 +77,9 @@ func cecInit(c *Connection, deviceName string) (C.libcec_connection_t, error) {
 	conf.deviceTypes.types[0] = C.CEC_DEVICE_TYPE_RECORDING_DEVICE
 	conf.callbackParam = unsafe.Pointer(c)
 	conf.bActivateSource = 0
-	conf.iHDMIPort = 4
+	conf.baseDevice = 0      // CECDEVICE_TV               = 0,
+	conf.tvVendor = 0x0000F0 // Samsung
+	//conf.iHDMIPort = 4
 	//conf.iButtonReleaseDelayMs = 0
 	//conf.iPhysicalAddress = 0
 	C.setName(conf, C.CString(deviceName))
