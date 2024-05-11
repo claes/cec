@@ -264,6 +264,11 @@ func (c *Connection) SetActiveSource(device_type int) bool {
 	return false
 }
 
+// RescanDevices
+func (c *Connection) RescanDevices() {
+	C.libcec_rescan_devices(c.connection)
+}
+
 // GetDeviceVendorID - Get the Vendor-ID of the device at the given address
 func (c *Connection) GetDeviceVendorID(address int) uint64 {
 	result := C.libcec_get_device_vendor_id(c.connection, C.cec_logical_address(address))
