@@ -74,7 +74,10 @@ func cecInit(c *Connection, deviceName string) (C.libcec_connection_t, error) {
 	defer C.freeConfiguration(conf)
 
 	conf.clientVersion = C.uint32_t(C.LIBCEC_VERSION_CURRENT)
-	conf.deviceTypes.types[0] = C.CEC_DEVICE_TYPE_RECORDING_DEVICE
+	//conf.deviceTypes.types = []C.cec_device_type{C.CEC_DEVICE_TYPE_RECORDING_DEVICE}
+	//x := []int{C.CEC_DEVICE_TYPE_RECORDING_DEVICE}
+	//conf.deviceTypes.types = (*C.cec_device_type)(unsafe.Pointer(&x[0])) // []C.cec_device_type{C.CEC_DEVICE_TYPE_RECORDING_DEVICE}
+	//conf.deviceTypes.types[0] = C.CEC_DEVICE_TYPE_RECORDING_DEVICE
 	conf.callbackParam = unsafe.Pointer(c)
 	conf.bActivateSource = 0
 	conf.baseDevice = 0      // CECDEVICE_TV               = 0,
