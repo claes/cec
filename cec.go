@@ -29,6 +29,12 @@ type Command struct {
 	Operation        string
 }
 
+type SourceActivation struct {
+	logicalAddress     int
+	logicalAddressName string
+	state              bool
+}
+
 var logicalNames = []string{"TV", "Recording", "Recording2", "Tuner",
 	"Playback", "Audio", "Tuner2", "Tuner3",
 	"Playback2", "Recording3", "Tuner4", "Playback3",
@@ -239,6 +245,22 @@ func (c *Connection) keyPressed(k int) {
 
 	if c.KeyPresses != nil {
 		c.KeyPresses <- k
+	}
+}
+
+func (c *Connection) menuActivated(s bool) {
+	log.Printf("CEC menu activated: %v", s)
+
+	if c.MenuActivations != nil {
+		c.MenuActivations <- s
+	}
+}
+
+func (c *Connection) sourceActivated(src *SourceActivation) {
+	log.Printf("CEC source activated: %d %s %t", src.logicalAddress, src.logicalAddressName, src.state)
+
+	if c.SourceActivations != nil {
+		c.SourceActivations <- src
 	}
 }
 

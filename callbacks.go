@@ -53,3 +53,24 @@ func alertReceived(c unsafe.Pointer, alert_type C.libcec_alert, cec_param C.libc
 	// TODO reconnect
 	return 0
 }
+
+//export sourceActivated
+func sourceActivated(c unsafe.Pointer, logicalAddress C.cec_logical_address, activated int) {
+
+	conn := (*Connection)(c)
+	src := &SourceActivation{
+		logicalAddress:     int(logicalAddress),
+		logicalAddressName: GetLogicalNameByAddress(int(logicalAddress)),
+		state:              activated == 1}
+	//conn.sourceActivated(int(logicalAddress), GetLogicalNameByAddress(int(logicalAddress)), activated == 1)
+	conn.sourceActivated(src)
+}
+
+// menuState is bool, 0 = activated, 1 = deactivated
+//
+//export menuStateChanged
+func menuStateChanged(c unsafe.Pointer, state C.cec_menu_state) C.uint8_t {
+	conn := (*Connection)(c)
+	conn.menuActivated(int(state) == 0)
+	return 1
+}

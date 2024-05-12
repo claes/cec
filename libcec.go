@@ -15,6 +15,8 @@ void logMessageCallback(void *, const cec_log_message *);
 void commandReceived(void *, const cec_command *);
 void keyPressed(void *, const cec_keypress *);
 void alertReceived(void *, const libcec_alert, const libcec_parameter);
+void sourceActivated(void *, const cec_logical_address, uint8_t activated);
+int menuStateChanged(void *, const cec_menu_state);
 
 libcec_configuration * allocConfiguration()  {
 	libcec_configuration * ret = (libcec_configuration*)malloc(sizeof(libcec_configuration));
@@ -33,8 +35,8 @@ void setupCallbacks(libcec_configuration *conf)
 	g_callbacks.commandReceived = &commandReceived;
 	g_callbacks.configurationChanged = NULL;
 	g_callbacks.alert = &alertReceived;
-	g_callbacks.menuStateChanged = NULL;
-	g_callbacks.sourceActivated = NULL;
+	g_callbacks.menuStateChanged = &menuStateChanged;
+	g_callbacks.sourceActivated = &sourceActivated;
 	(*conf).callbacks = &g_callbacks;
 }
 
@@ -57,10 +59,12 @@ import (
 
 // Connection class
 type Connection struct {
-	connection C.libcec_connection_t
-	Commands   chan *Command
-	KeyPresses chan int
-	Messages   chan string
+	connection        C.libcec_connection_t
+	Commands          chan *Command
+	KeyPresses        chan int
+	Messages          chan string
+	SourceActivations chan *SourceActivation
+	MenuActivations   chan bool
 }
 
 type cecAdapter struct {
