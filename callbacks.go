@@ -4,13 +4,13 @@ package cec
 import "C"
 
 import (
-	"log"
+	"log/slog"
 	"unsafe"
 )
 
 //export logMessageCallback
 func logMessageCallback(c unsafe.Pointer, msg *C.cec_log_message) C.int {
-	log.Println("CEC msg rx:", C.GoString(msg.message))
+	slog.Debug("CEC msg rx", "message", C.GoString(msg.message))
 
 	conn := (*Connection)(c)
 	conn.messageReceived(C.GoString(msg.message))
@@ -19,7 +19,7 @@ func logMessageCallback(c unsafe.Pointer, msg *C.cec_log_message) C.int {
 
 //export keyPressed
 func keyPressed(c unsafe.Pointer, code *C.cec_keypress) C.int {
-	log.Println("CEC keycode rx:", code)
+	slog.Debug("CEC keycode rx", "code", code)
 
 	conn := (*Connection)(c)
 	conn.keyPressed(int(C.int(code.keycode)))
@@ -28,7 +28,7 @@ func keyPressed(c unsafe.Pointer, code *C.cec_keypress) C.int {
 
 //export commandReceived
 func commandReceived(c unsafe.Pointer, msg *C.cec_command) C.int {
-	log.Printf("CEC command rx: %v\n", msg)
+	slog.Debug("CEC command rx", "msg", msg)
 
 	conn := (*Connection)(c)
 	cmd := &Command{
@@ -49,14 +49,13 @@ func commandReceived(c unsafe.Pointer, msg *C.cec_command) C.int {
 
 //export alertReceived
 func alertReceived(c unsafe.Pointer, alert_type C.libcec_alert, cec_param C.libcec_parameter) C.int {
-	log.Printf("CEC alert: %v %v\n", alert_type, cec_param)
+	slog.Error("CEC alert", "alert_type", alert_type, "cec_param", cec_param)
 	// TODO reconnect
 	return 0
 }
 
 //export sourceActivated
 func sourceActivated(c unsafe.Pointer, logicalAddress C.cec_logical_address, activated int) {
-
 	conn := (*Connection)(c)
 	src := &SourceActivation{
 		LogicalAddress:     int(logicalAddress),

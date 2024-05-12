@@ -2,7 +2,7 @@ package cec
 
 import (
 	"encoding/hex"
-	"log"
+	"log/slog"
 	"strings"
 	"time"
 )
@@ -164,27 +164,27 @@ func Open(name string, deviceName string) (*Connection, error) {
 
 	c.connection, err = cecInit(c, deviceName)
 	if err != nil {
-		log.Println(err)
+		slog.Error("Error initializing connection", "error", err)
 		return nil, err
 	}
 
-	log.Println("CEC initialized")
+	slog.Info("CEC initialized")
 
 	adapter, err := getAdapter(c.connection, name)
 	if err != nil {
-		log.Println(err)
+		slog.Error("Error retrieving adapter", "error", err)
 		return nil, err
 	}
 
-	log.Printf("Adapter retrieved %s %s\n", adapter.Comm, adapter.Path)
+	slog.Info("Adapter retrieved", "comm", adapter.Comm, "path", adapter.Path)
 
 	err = openAdapter(c.connection, adapter)
 	if err != nil {
-		log.Println(err)
+		slog.Error("Error opening adapter", "error", err)
 		return nil, err
 	}
 
-	log.Println("Adapter opened")
+	slog.Info("Adapter opened")
 
 	return c, nil
 }
@@ -200,7 +200,7 @@ func (c *Connection) Key(address int, key interface{}) {
 		if key[:2] == "0x" && len(key) == 4 {
 			keybytes, err := hex.DecodeString(key[2:])
 			if err != nil {
-				log.Println(err)
+				slog.Error("Could not decode key", "error", err)
 				return
 			}
 			keycode = int(keybytes[0])
@@ -210,24 +210,24 @@ func (c *Connection) Key(address int, key interface{}) {
 	case int:
 		keycode = key
 	default:
-		log.Println("Invalid key type")
+		slog.Error("Invalid key type", "keytype", key)
 		return
 	}
 	er := c.KeyPress(address, keycode)
 	if er != nil {
-		log.Println(er)
+		slog.Error("Error handling key press", "error", er)
 		return
 	}
 	time.Sleep(10 * time.Millisecond)
 	er = c.KeyRelease(address)
 	if er != nil {
-		log.Println(er)
+		slog.Error("Error handling key release", "error", er)
 		return
 	}
 }
 
 func (c *Connection) commandReceived(msg *Command) {
-	log.Printf("CEC command: %x = %s\n", msg.opcode, opcodes[msg.opcode])
+	slog.Debug("CEC command", "opcodeIdx", msg.opcode, "opcode", opcodes[msg.opcode])
 
 	if c.Commands != nil {
 		c.Commands <- msg
@@ -241,7 +241,7 @@ func (c *Connection) messageReceived(msg string) {
 }
 
 func (c *Connection) keyPressed(k int) {
-	log.Printf("CEC key pressed: %d\n", k)
+	slog.Debug("CEC key pressed", "key", k)
 
 	if c.KeyPresses != nil {
 		c.KeyPresses <- k
@@ -249,7 +249,7 @@ func (c *Connection) keyPressed(k int) {
 }
 
 func (c *Connection) menuActivated(s bool) {
-	log.Printf("CEC menu activated: %t\n", s)
+	slog.Debug("CEC menu activated", "state", s)
 
 	if c.MenuActivations != nil {
 		c.MenuActivations <- s
@@ -257,8 +257,10 @@ func (c *Connection) menuActivated(s bool) {
 }
 
 func (c *Connection) sourceActivated(src *SourceActivation) {
-	log.Printf("CEC source activated: %d %s %t\n",
-		src.LogicalAddress, src.LogicalAddressName, src.State)
+	slog.Debug("CEC source activated",
+		"logicalAddress", src.LogicalAddress,
+		"logicalAddressName", src.LogicalAddressName,
+		"state", src.State)
 
 	if c.SourceActivations != nil {
 		c.SourceActivations <- src
