@@ -30,9 +30,9 @@ type Command struct {
 }
 
 type SourceActivation struct {
-	logicalAddress     int
-	logicalAddressName string
-	state              bool
+	LogicalAddress     int
+	LogicalAddressName string
+	State              bool
 }
 
 var logicalNames = []string{"TV", "Recording", "Recording2", "Tuner",
@@ -227,7 +227,7 @@ func (c *Connection) Key(address int, key interface{}) {
 }
 
 func (c *Connection) commandReceived(msg *Command) {
-	log.Printf("CEC command: %x = %s", msg.opcode, opcodes[msg.opcode])
+	log.Printf("CEC command: %x = %s\n", msg.opcode, opcodes[msg.opcode])
 
 	if c.Commands != nil {
 		c.Commands <- msg
@@ -241,7 +241,7 @@ func (c *Connection) messageReceived(msg string) {
 }
 
 func (c *Connection) keyPressed(k int) {
-	log.Printf("CEC key pressed: %d", k)
+	log.Printf("CEC key pressed: %d\n", k)
 
 	if c.KeyPresses != nil {
 		c.KeyPresses <- k
@@ -249,7 +249,7 @@ func (c *Connection) keyPressed(k int) {
 }
 
 func (c *Connection) menuActivated(s bool) {
-	log.Printf("CEC menu activated: %v", s)
+	log.Printf("CEC menu activated: %t\n", s)
 
 	if c.MenuActivations != nil {
 		c.MenuActivations <- s
@@ -257,7 +257,8 @@ func (c *Connection) menuActivated(s bool) {
 }
 
 func (c *Connection) sourceActivated(src *SourceActivation) {
-	log.Printf("CEC source activated: %d %s %t", src.logicalAddress, src.logicalAddressName, src.state)
+	log.Printf("CEC source activated: %d %s %t\n",
+		src.LogicalAddress, src.LogicalAddressName, src.State)
 
 	if c.SourceActivations != nil {
 		c.SourceActivations <- src

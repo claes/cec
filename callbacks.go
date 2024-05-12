@@ -59,18 +59,16 @@ func sourceActivated(c unsafe.Pointer, logicalAddress C.cec_logical_address, act
 
 	conn := (*Connection)(c)
 	src := &SourceActivation{
-		logicalAddress:     int(logicalAddress),
-		logicalAddressName: GetLogicalNameByAddress(int(logicalAddress)),
-		state:              activated == 1}
-	//conn.sourceActivated(int(logicalAddress), GetLogicalNameByAddress(int(logicalAddress)), activated == 1)
+		LogicalAddress:     int(logicalAddress),
+		LogicalAddressName: GetLogicalNameByAddress(int(logicalAddress)),
+		State:              activated == 1}
 	conn.sourceActivated(src)
 }
 
-// menuState is bool, 0 = activated, 1 = deactivated
-//
 //export menuStateChanged
 func menuStateChanged(c unsafe.Pointer, state C.cec_menu_state) C.uint8_t {
 	conn := (*Connection)(c)
+	// menuState is bool, 0 = activated, 1 = deactivated
 	conn.menuActivated(int(state) == 0)
 	return 1
 }
