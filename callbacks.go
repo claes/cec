@@ -28,7 +28,7 @@ func keyPressed(c unsafe.Pointer, code *C.cec_keypress) C.int {
 
 //export commandReceived
 func commandReceived(c unsafe.Pointer, msg *C.cec_command) C.int {
-	log.Printf("CEC command rx: %v", msg)
+	log.Printf("CEC command rx: %v\n", msg)
 
 	conn := (*Connection)(c)
 	cmd := &Command{
@@ -49,8 +49,7 @@ func commandReceived(c unsafe.Pointer, msg *C.cec_command) C.int {
 
 //export alertReceived
 func alertReceived(c unsafe.Pointer, alert_type C.libcec_alert, cec_param C.libcec_parameter) C.int {
-	log.Printf("CEC alert\n")
 	log.Printf("CEC alert: %v %v\n", alert_type, cec_param)
-	// reconnect
+	// TODO reconnect
 	return 0
 }
