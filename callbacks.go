@@ -32,15 +32,15 @@ func commandReceived(c unsafe.Pointer, msg *C.cec_command) C.int {
 
 	conn := (*Connection)(c)
 	cmd := &Command{
-		initiator:   uint32(msg.initiator),
-		destination: uint32(msg.destination),
-		ack:         int8(msg.ack),
-		eom:         int8(msg.eom),
-		opcode:      int(msg.opcode),
-		// parameters: todo
-		opcode_set:       int8(msg.opcode_set),
-		transmit_timeout: int32(msg.transmit_timeout),
-		Operation:        opcodes[int(msg.opcode)],
+		Initiator:       uint32(msg.initiator),
+		Destination:     uint32(msg.destination),
+		Ack:             int8(msg.ack),
+		Eom:             int8(msg.eom),
+		Opcode:          int(msg.opcode),
+		Parameters:      DataPacket{Data: msg.parameters.data, Size: int(msg.parameters.size)},
+		OpcodeSet:       int8(msg.opcode_set),
+		TransmitTimeout: int32(msg.transmit_timeout),
+		Operation:       opcodes[int(msg.opcode)],
 	}
 	conn.commandReceived(cmd)
 

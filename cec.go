@@ -18,15 +18,20 @@ type Device struct {
 }
 
 type Command struct {
-	initiator        uint32  /**< the logical address of the initiator of this message */
-	destination      uint32  /**< the logical address of the destination of this message */
-	ack              int8    /**< 1 when the ACK bit is set, 0 otherwise */
-	eom              int8    /**< 1 when the EOM bit is set, 0 otherwise */
-	opcode           int     /**< the opcode of this message */
-	parameters       []uint8 /**< the parameters attached to this message */
-	opcode_set       int8    /**< 1 when an opcode is set, 0 otherwise (POLL message) */
-	transmit_timeout int32   /**< the timeout to use in ms */
-	Operation        string
+	Initiator       uint32     /**< the logical address of the initiator of this message */
+	Destination     uint32     /**< the logical address of the destination of this message */
+	Ack             int8       /**< 1 when the ACK bit is set, 0 otherwise */
+	Eom             int8       /**< 1 when the EOM bit is set, 0 otherwise */
+	Opcode          int        /**< the opcode of this message */
+	Parameters      DataPacket /**< the parameters attached to this message */
+	OpcodeSet       int8       /**< 1 when an opcode is set, 0 otherwise (POLL message) */
+	TransmitTimeout int32      /**< the timeout to use in ms */
+	Operation       string
+}
+
+type DataPacket struct {
+	Data interface{}
+	Size int
 }
 
 type SourceActivation struct {
@@ -227,7 +232,7 @@ func (c *Connection) Key(address int, key interface{}) {
 }
 
 func (c *Connection) commandReceived(msg *Command) {
-	slog.Debug("CEC command", "opcodeIdx", msg.opcode, "opcode", opcodes[msg.opcode])
+	slog.Debug("CEC command", "opcodeIdx", msg.Opcode, "opcode", opcodes[msg.Opcode])
 
 	if c.Commands != nil {
 		c.Commands <- msg
