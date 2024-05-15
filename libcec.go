@@ -127,9 +127,34 @@ func openAdapter(connection C.libcec_connection_t, adapter cecAdapter) error {
 	return nil
 }
 
-// Transmit CEC command - command is encoded as a hex string with
-// colons (e.g. "40:04")
-func (c *Connection) Transmit(command string) {
+func CreateString(cmd *C.cec_command) string {
+
+	//TODO: cmd.initiator can be negative
+	initDest := byte((cmd.initiator << 4) | (cmd.destination & 0x0F))
+
+	bytes := []byte{initDest, byte(cmd.opcode)}
+
+	if cmd.parameters.size > 0 {
+		for i, value := range cmd.parameters.data {
+			fmt.Printf("Value: %v\n", value)
+			bytes = append(bytes, byte(value))
+			if i > int(cmd.parameters.size) {
+				break
+			}
+		}
+	}
+
+	var sb strings.Builder
+	for i, char := range strings.ToUpper(hex.EncodeToString(bytes)) {
+		if i > 0 && i%2 == 0 {
+			sb.WriteRune(':')
+		}
+		sb.WriteRune(char)
+	}
+	return sb.String()
+}
+
+func CreateCommand(command string) C.cec_command {
 	var cecCommand C.cec_command
 
 	cmd, err := hex.DecodeString(removeSeparators(command))
@@ -157,6 +182,13 @@ func (c *Connection) Transmit(command string) {
 		}
 	}
 
+	return cecCommand
+}
+
+// Transmit CEC command - command is encoded as a hex string with
+// colons (e.g. "40:04")
+func (c *Connection) Transmit(command string) {
+	cecCommand := CreateCommand(command)
 	C.libcec_transmit(c.connection, (*C.cec_command)(&cecCommand))
 }
 
