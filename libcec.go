@@ -62,7 +62,7 @@ import (
 type Connection struct {
 	connection        C.libcec_connection_t
 	Commands          chan *Command
-	KeyPresses        chan int
+	KeyPresses        chan *KeyPress
 	Messages          chan string
 	SourceActivations chan *SourceActivation
 	MenuActivations   chan bool

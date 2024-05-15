@@ -22,7 +22,11 @@ func keyPressed(c unsafe.Pointer, code *C.cec_keypress) C.int {
 	slog.Debug("CEC keycode rx", "code", code)
 
 	conn := (*Connection)(c)
-	conn.keyPressed(int(C.int(code.keycode)))
+	keyPress := &KeyPress{
+		KeyCode:  int(C.int(code.keycode)),
+		Duration: int(code.duration),
+	}
+	conn.keyPressed(keyPress)
 	return 0
 }
 

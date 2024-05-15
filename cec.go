@@ -41,6 +41,11 @@ type SourceActivation struct {
 	State              bool
 }
 
+type KeyPress struct {
+	KeyCode  int
+	Duration int
+}
+
 var logicalNames = []string{"TV", "Recording", "Recording2", "Tuner",
 	"Playback", "Audio", "Tuner2", "Tuner3",
 	"Playback2", "Recording3", "Tuner4", "Playback3",
@@ -246,7 +251,7 @@ func (c *Connection) messageReceived(msg string) {
 	}
 }
 
-func (c *Connection) keyPressed(k int) {
+func (c *Connection) keyPressed(k *KeyPress) {
 	slog.Debug("CEC key pressed", "key", k)
 
 	if c.KeyPresses != nil {
