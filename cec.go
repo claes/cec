@@ -27,6 +27,7 @@ type Command struct {
 	OpcodeSet       int8       /**< 1 when an opcode is set, 0 otherwise (POLL message) */
 	TransmitTimeout int32      /**< the timeout to use in ms */
 	Operation       string
+	CommandString   string
 }
 
 type DataPacket struct {

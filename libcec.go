@@ -127,7 +127,7 @@ func openAdapter(connection C.libcec_connection_t, adapter cecAdapter) error {
 	return nil
 }
 
-func CreateString(cmd *C.cec_command) string {
+func CreateCommandString(cmd *C.cec_command) string {
 
 	//TODO: cmd.initiator can be negative
 	initDest := byte((cmd.initiator << 4) | (cmd.destination & 0x0F))
