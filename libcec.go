@@ -136,7 +136,6 @@ func CreateCommandString(cmd *C.cec_command) string {
 
 	if cmd.parameters.size > 0 {
 		for i, value := range cmd.parameters.data {
-			fmt.Printf("Value: %v\n", value)
 			bytes = append(bytes, byte(value))
 			if i > int(cmd.parameters.size) {
 				break

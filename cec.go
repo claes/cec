@@ -179,7 +179,7 @@ func Open(name string, deviceName string) (*Connection, error) {
 		return nil, err
 	}
 
-	slog.Info("CEC initialized")
+	slog.Info("CEC initialized", "deviceName", deviceName)
 
 	adapter, err := getAdapter(c.connection, name)
 	if err != nil {
@@ -187,7 +187,7 @@ func Open(name string, deviceName string) (*Connection, error) {
 		return nil, err
 	}
 
-	slog.Info("Adapter retrieved", "comm", adapter.Comm, "path", adapter.Path)
+	slog.Info("Adapter retrieved", "name", name)
 
 	err = openAdapter(c.connection, adapter)
 	if err != nil {
