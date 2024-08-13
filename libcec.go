@@ -95,6 +95,10 @@ func cecInit(c *Connection, deviceName string) (C.libcec_connection_t, error) {
 	return connection, nil
 }
 
+func pingAdapter(connection C.libcec_connection_t) int {
+	return int(C.libcec_ping_adapters(connection))
+}
+
 func getAdapter(connection C.libcec_connection_t, name string) (cecAdapter, error) {
 	var adapter cecAdapter
 

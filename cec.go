@@ -301,6 +301,10 @@ func (c *Connection) List() map[string]Device {
 	return devices
 }
 
+func (c *Connection) Ping() int {
+	return pingAdapter(c.connection)
+}
+
 // removeSeparators - remove separators (":", "-", " ", "_")
 func removeSeparators(in string) string {
 	out := strings.Map(func(r rune) rune {
