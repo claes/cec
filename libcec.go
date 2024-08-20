@@ -200,6 +200,11 @@ func (c *Connection) Destroy() {
 	C.libcec_destroy(c.connection)
 }
 
+// Close - close the cec connection
+func (c *Connection) Close() {
+	C.libcec_close(c.connection)
+}
+
 // PowerOn - power on the device with the given logical address
 func (c *Connection) PowerOn(address int) error {
 	if C.libcec_power_on_devices(c.connection, C.cec_logical_address(address)) != 0 {
